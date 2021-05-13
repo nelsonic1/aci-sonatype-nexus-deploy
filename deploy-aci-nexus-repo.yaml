@@ -1,0 +1,73 @@
+api-version: 2019-12-01
+location: eastus
+name: nexus-repo-ssl
+properties:
+  containers:
+    - name: caddy
+      properties:
+       image: caddy:latest
+       ports:
+       - port: 443
+         protocol: TCP
+       - port: 80
+         protocol: TCP
+       command: [
+                 "caddy",
+                 "reverse-proxy",
+                 "--from",
+                 "yourdnsNameLabel.eastus.azurecontainer.io",
+                 "--to",
+                 "localhost:8081"
+          ]
+       resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 1
+       volumeMounts:
+       - name: caddy-certs
+         mountPath: /data
+       - name: caddy-config
+         mountPath: /config
+    - name: nexus-repo
+      properties:
+        image: sonatype/nexus3:latest
+        ports:
+        - port: 8081
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 2.0
+            memoryInGB: 8.0
+        volumeMounts:
+        - name: nexus-data
+          mountPath: /nexus-data
+  volumes:
+  - name: nexus-data
+    azureFile:
+      sharename: nexus-data
+      storageAccountName: yourStorageAccountName
+      storageAccountKey: yourStorageAccountKey
+  - name: caddy-certs
+    azureFile:
+      sharename: caddy-certs
+      storageAccountName: yourStorageAccountName
+      storageAccountKey: yourStorageAccountKey
+  - name: caddy-config
+    azureFile:
+      sharename: caddy-config
+      storageAccountName: yourStorageAccountName
+      storageAccountKey: yourStorageAccountKey
+  ipAddress:
+    ports:
+    - port: 443
+      protocol: TCP
+    - port: 80
+      protocol: TCP
+    - port: 8081
+      protocol: TCP
+    type: Public
+    dnsNameLabel: yourdnsnamelabel
+  restartPolicy: Always
+  osType: Linux
+tags: null
+type: Microsoft.ContainerInstance/containerGroups
