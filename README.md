@@ -100,7 +100,7 @@ Our Caddy and Nexus containers will need some Azure File Shares to hold certific
 **Create Storage Account**
 
 ```
-az storage account create \ 
+az storage account create \
     --resource-group $resourceGroupName \
     --name $storageAccountName \
     --location $locationName \
