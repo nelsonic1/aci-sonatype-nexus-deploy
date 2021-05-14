@@ -236,7 +236,7 @@ If it is successful, you will see the screen below and you should notice a Lock 
 Now it's time to login to Nexus Repository Manager. On first start of the container, there is only one account under `admin` and the password for that account is located inside the container. Follow these instructions to retrieve that password. This is a one-time use password and you will be required to change it after logging in.
 
 ``` bash
-az container exec --resource-group demo --name nexus-repo-ssl --container-name nexus-repo --exec-command "/bin/bash"
+az container exec --resource-group $resourceGroupName --name $containerGroupName --container-name nexus-repo --exec-command "/bin/bash"
 
 # copy the password that is output after this command
 cat /nexus-data/admin.password && echo
